@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-7-17 20:11:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="kis.entity.KisUser" table="kis_user" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="sequence" >
+                <param name="sequence">seq_kis</param>
+            </generator>
+        </id>
+        <many-to-one name="kisRole" class="kis.entity.KisRole" fetch="select">
+            <column name="role" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" not-null="true" unique="true" />
+        </property>
+        <property name="passwd" type="string">
+            <column name="passwd" not-null="true" />
+        </property>
+        <property name="updateTime" type="timestamp">
+            <column name="update_time" length="29" />
+        </property>
+        <property name="showName" type="string">
+            <column name="show_name" />
+        </property>
+        <set name="saleOrders" table="sale_order" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="create_user">
+                    <comment>&#182;&#169;&#181;&#165;&#214;&#198;&#181;&#165;&#200;&#203;</comment>
+                </column>
+            </key>
+            <one-to-many class="kis.entity.SaleOrder" />
+        </set>
+    </class>
+</hibernate-mapping>

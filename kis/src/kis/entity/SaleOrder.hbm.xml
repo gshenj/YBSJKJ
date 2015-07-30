@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-7-17 20:11:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="kis.entity.SaleOrder" table="sale_order" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="sequence" >
+                    <param name="sequence">seq_kis</param>
+            </generator>
+        </id>
+        <many-to-one name="customer" class="kis.entity.Customer" fetch="select">
+            <column name="customer">
+                <comment>&#191;&#205;&#187;&#167;id</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="kisUser" class="kis.entity.KisUser" fetch="select">
+            <column name="create_user">
+                <comment>&#182;&#169;&#181;&#165;&#214;&#198;&#181;&#165;&#200;&#203;</comment>
+            </column>
+        </many-to-one>
+        <property name="dateText" type="string">
+            <column name="date_text">
+                <comment>&#191;&#170;&#181;&#165;&#200;&#213;&#198;&#218;</comment>
+            </column>
+        </property>
+        <property name="totalSum" type="big_decimal">
+            <column name="total_sum" precision="131089" scale="0">
+                <comment>&#182;&#169;&#181;&#165;&#215;&#220;&#189;&#240;&#182;&#238;</comment>
+            </column>
+        </property>
+        <property name="createDatetime" type="timestamp">
+            <column name="create_datetime" length="29">
+                <comment>&#180;&#180;&#189;&#168;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="comment" type="string">
+            <column name="comment">
+                <comment>&#182;&#169;&#181;&#165;&#177;&#184;&#215;&#162;</comment>
+            </column>
+        </property>
+        <property name="orderNumber" type="string">
+            <column name="order_number" unique="true">
+                <comment>&#182;&#169;&#181;&#165;&#186;&#197;&#194;&#235;</comment>
+            </column>
+        </property>
+        <property name="contentThumbnail" type="string">
+            <column name="content_thumbnail" />
+        </property>
+
+
+        <property name="flag" type="int">
+            <column name="flag" />
+        </property>
+
+
+        <property name="customerName" type="string">
+            <column name="customer_name" />
+        </property>
+
+        <property name="customerAddress" type="string">
+            <column name="customer_address" />
+        </property>
+
+        <property name="customerPrincipal" type="string">
+            <column name="customer_principal" />
+        </property>
+
+        <property name="customerContactNumber" type="string">
+            <column name="customer_contact_number" />
+        </property>
+
+        <property name="createUserName" type="string">
+            <column name="create_user_name" />
+        </property>
+
+
+        <set name="saleOrderItems" table="sale_order_item" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="sale_order">
+                    <comment>&#182;&#169;&#181;&#165;&#207;&#238;&#182;&#212;&#211;&#166;&#196;&#196;&#184;&#246;&#182;&#169;&#181;&#165;</comment>
+                </column>
+            </key>
+            <one-to-many class="kis.entity.SaleOrderItem" />
+        </set>
+    </class>
+</hibernate-mapping>

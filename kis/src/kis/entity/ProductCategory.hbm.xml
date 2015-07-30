@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-7-17 20:11:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="kis.entity.ProductCategory" table="product_category" schema="public" optimistic-lock="version">
+        <comment>&#178;&#250;&#198;&#183;&#192;&#224;&#177;&#240;&#163;&#186;&#190;&#219;&#177;&#251;&#207;&#169;&#163;&#172;ABS&#181;&#200;</comment>
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="sequence" >
+                <param name="sequence">seq_kis</param>
+            </generator>
+        </id>
+        <property name="name" type="string">
+            <column name="name" not-null="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" />
+        </property>
+        <set name="productModals" table="product_modal" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="category" not-null="true">
+                    <comment>&#178;&#250;&#198;&#183;&#183;&#214;&#192;&#224;</comment>
+                </column>
+            </key>
+            <one-to-many class="kis.entity.ProductModal" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,101 @@
+* {
+    margin: 0 0;
+    padding: 0 0;
+    font: 12pt/1.5 \5b8b\4f53, Arial, sans-serif;
+}
+
+body {
+    text-align: center;
+    background-color: ghostwhite;
+    margin:0;
+    padding:0;
+
+}
+
+.kis_wrapper {
+    margin: 1px auto 20px;
+    width: 800pt;
+    background-color:#fff;
+    border:1px solid #36b0b6;
+}
+
+
+table {
+    border: none;
+    border-collapse: collapse;
+}
+
+td {
+    border: none;
+}
+
+a.m_item {
+    text-decoration: none;
+    /*margin: 10px 10px;*/
+    margin-right:10pt;
+    /*  background-color: dodgerblue;*/
+    color: white;
+    font-size: 18pt;
+    line-height: 28pt;
+    height: 28pt;
+    /*font-weight: bold;*/
+    text-align: center;
+    display: inline-block;
+    border:0px solid red;
+}
+
+a.m_item:hover {
+    text-decoration: underline;
+    color: black;
+}
+
+a.cur_item {
+    background-color: inherit;
+    color: black; /*当前菜单变为白底黑字*/
+}
+a.cur_item:hover {
+    text-decoration: none;
+}
+
+a.button {
+    text-decoration: none;
+    padding: 4pt 10pt;
+
+    border: 1px solid steelblue;
+    background-color: lightblue;
+    /*height: 28pt;
+    line-height: 28pt;*/
+    vertical-align: middle;
+    font-size: 12pt;
+    color: blue;
+}
+
+.kis_content {
+    clear:both;
+    padding: 8pt 20pt 10pt 20pt;
+   /* background-color: ghostwhite;*/
+    overflow: auto;
+    text-align: left;
+
+}
+
+.kis_footer {
+    margin: 10pt auto 0pt;
+    height: 50px;
+    line-height: 50px;
+    background-color: #67b6a5;
+}
+
+/* 半透明的遮罩层 */
+.overlay {
+    background: #000;
+    filter: alpha(opacity=50); /* IE的透明度 */
+    opacity: 0.5; /* 透明度 */
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 100; /* 此处的图层要大于页面 */
+    display: none;
+}

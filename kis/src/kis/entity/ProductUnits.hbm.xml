@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-7-17 20:11:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="kis.entity.ProductUnits" table="product_units" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="sequence" >
+                <param name="sequence">seq_kis</param>
+            </generator>
+        </id>
+        <property name="cnName" type="string">
+            <column name="cn_name" not-null="true" />
+        </property>
+        <property name="enName" type="string">
+            <column name="en_name" not-null="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" />
+        </property>
+        <set name="productModals" table="product_modal" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="units">
+                    <comment>&#188;&#198;&#193;&#191;&#181;&#165;&#206;&#187;</comment>
+                </column>
+            </key>
+            <one-to-many class="kis.entity.ProductModal" />
+        </set>
+    </class>
+</hibernate-mapping>

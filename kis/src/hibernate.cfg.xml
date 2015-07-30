@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="jndi/SessionFactory">
+        <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.password">kisweb</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/kisweb</property>
+        <property name="hibernate.connection.username">kisweb</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.search.autoregister_listeners">false</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.validator.apply_to_ddl">false</property>
+        <mapping resource="kis/entity/SaleOrder.hbm.xml" />
+        <mapping resource="kis/entity/KisUser.hbm.xml" />
+        <mapping resource="kis/entity/SaleOrderItem.hbm.xml" />
+        <mapping resource="kis/entity/Company.hbm.xml" />
+        <mapping resource="kis/entity/ProductUnits.hbm.xml" />
+        <mapping resource="kis/entity/KisRole.hbm.xml" />
+        <mapping resource="kis/entity/City.hbm.xml" />
+        <mapping resource="kis/entity/Customer.hbm.xml" />
+        <mapping resource="kis/entity/ProductCategory.hbm.xml" />
+        <mapping resource="kis/entity/ProductModal.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="4279313886">
+    <data-source source="LOCAL" name="PostgreSQL - kisweb@localhost" uuid="c9e25c73-0440-4f87-9ad5-5bbc4b4df17b">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/kisweb</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

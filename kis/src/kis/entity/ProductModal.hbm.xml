@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-7-17 20:11:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="kis.entity.ProductModal" table="product_modal" schema="public" optimistic-lock="version">
+        <comment>&#178;&#250;&#198;&#183;&#208;&#205;&#186;&#197;</comment>
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="sequence" >
+                <param name="sequence">seq_kis</param>
+            </generator>
+        </id>
+        <many-to-one name="customer" class="kis.entity.Customer" fetch="select">
+            <column name="customer" not-null="true">
+                <comment>product belong to which customer!</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="productCategory" class="kis.entity.ProductCategory" fetch="select">
+            <column name="category" not-null="true">
+                <comment>&#178;&#250;&#198;&#183;&#183;&#214;&#192;&#224;</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="productUnits" class="kis.entity.ProductUnits" fetch="select">
+            <column name="units">
+                <comment>&#188;&#198;&#193;&#191;&#181;&#165;&#206;&#187;</comment>
+            </column>
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" not-null="true" unique="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" />
+        </property>
+        <property name="suggestUnitPrice" type="big_decimal">
+            <column name="suggest_unit_price" precision="10" />
+        </property>
+        <set name="saleOrderItems" table="sale_order_item" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="product_modal" />
+            </key>
+            <one-to-many class="kis.entity.SaleOrderItem" />
+        </set>
+    </class>
+</hibernate-mapping>

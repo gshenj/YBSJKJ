@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-7-17 20:11:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="kis.entity.Customer" table="customer" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="sequence" >
+                <param name="sequence">seq_kis</param>
+            </generator>
+        </id>
+        <many-to-one name="city" class="kis.entity.City" fetch="select">
+            <column name="city" />
+        </many-to-one>
+        <many-to-one name="company" class="kis.entity.Company" fetch="select">
+            <column name="company">
+                <comment>&#182;&#212;&#211;&#166;&#185;&#171;&#203;&#190;&#202;&#199;&#196;&#196;&#184;&#246;</comment>
+            </column>
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" not-null="true" unique="true" />
+        </property>
+        <property name="telNumber" type="string">
+            <column name="tel_number">
+                <comment>seperate with ';' if has more then one tel number.</comment>
+            </column>
+        </property>
+        <property name="mobileNumber" type="string">
+            <column name="mobile_number">
+                <comment>seperate with ';' if has more then one mobile number.</comment>
+            </column>
+        </property>
+        <property name="address" type="string">
+            <column name="address" />
+        </property>
+        <property name="saleBillInfo" type="string">
+            <column name="sale_bill_info">
+                <comment>&#191;&#170;&#198;&#177;&#208;&#197;&#207;&#162;</comment>
+            </column>
+        </property>
+        <property name="principal" type="string">
+            <column name="principal">
+                <comment>&#184;&#186;&#212;&#240;&#200;&#203;</comment>
+            </column>
+        </property>
+        <set name="saleOrders" table="sale_order" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="customer">
+                    <comment>&#191;&#205;&#187;&#167;id</comment>
+                </column>
+            </key>
+            <one-to-many class="kis.entity.SaleOrder" />
+        </set>
+        <set name="productModals" table="product_modal" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="customer" not-null="true">
+                    <comment>product belong to which customer!</comment>
+                </column>
+            </key>
+            <one-to-many class="kis.entity.ProductModal" />
+        </set>
+    </class>
+</hibernate-mapping>

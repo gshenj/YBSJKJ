@@ -1,0 +1,87 @@
+
+
+.lavaLampNoImage {
+    position: relative;
+    height: 29px;
+    width: 100%;
+    background-color: white;
+    padding: 15px 0px;
+    margin: 0px 0;
+    overflow: hidden;
+    border: 1px solid gray;
+}
+.lavaLampNoImage li {
+    float: left;
+    list-style: none;
+}
+.lavaLampNoImage li.back {
+    border: 1px solid #000;
+    background-color: #e6e8ea;
+    width: 9px;
+    height: 30px;
+    z-index: 8;
+    position: absolute;
+}
+.lavaLampNoImage li a {
+    font: bold 14px arial;
+    text-decoration: none;
+    color: #000;
+    outline: none;
+    text-align: center;
+    top: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    z-index: 10;
+    display: block;
+    float: left;
+    height: 30px;
+    position: relative;
+    overflow: hidden;
+    margin: auto 10px;
+}
+.lavaLampNoImage li a:hover, .lavaLampNoImage li a:active, .lavaLampNoImage li a:visited {
+    border: none;
+}
+
+
+.lavaLampBottomStyle {
+            position: relative;
+            height: 29px;
+            width: 100%;
+            background-color: white;
+            padding: 15px;
+            margin: 0px 0;
+            overflow: hidden;
+            border: 0px solid gray;
+        }
+                .lavaLampBottomStyle li {
+                    float: left;
+                    list-style: none;
+                }
+                    .lavaLampBottomStyle li.back {
+                        border-bottom: 5px solid blue;
+                        width: 9px;
+                        height: 30px;
+                        z-index: 8;
+                        position: absolute;
+                    }
+                    .lavaLampBottomStyle li a {
+                        font: bold 18px arial;
+                        text-decoration: none;
+                        color: #000;
+                        outline: none;
+                        text-align: center;
+                        top: 7px;
+                        text-transform: uppercase;
+                        letter-spacing: 0;
+                        z-index: 10;
+                        display: block;
+                        float: left;
+                        height: 30px;
+                        position: relative;
+                        overflow: hidden;
+                        margin: auto 10px;
+                    }   
+                        .lavaLampBottomStyle li a:hover, .lavaLampBottomStyle li a:active, .lavaLampBottomStyle li a:visited {
+                            border: none;
+                        }                     
