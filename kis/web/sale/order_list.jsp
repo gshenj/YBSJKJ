@@ -145,7 +145,7 @@
                 })
             }, function (s) {
                 previewOrPrint(s);
-                myModal.close();
+                // myModal.close();
             });
         }
 
