@@ -1,17 +1,27 @@
 package kis.servlet;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import kis.dao.*;
 import kis.entity.*;
 import kis.service.*;
-import kis.util.JSONResult;
-import kis.util.Pagination;
-import kis.util.Settings;
-import kis.util.WebUtils;
+import kis.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 
 import javax.json.*;
 import javax.servlet.ServletException;
@@ -19,9 +29,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -174,7 +188,6 @@ public class SaleServiceServlet extends HttpServlet {
         }
 
 
-
         JSON.writeJSONStringTo(customerBeans, response.getWriter());
     }
 
@@ -298,6 +311,28 @@ public class SaleServiceServlet extends HttpServlet {
         // response.getWriter().write(Settings.CITIES_JSON_STR);
     }
 
+    public void statisticSaleOrders(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("execute getSaleOrders");
+        String beginDate = request.getParameter("beginDate");
+        String endDate = request.getParameter("endDate");
+        //int flag = WebUtils.getIntParamValue(request, "flag", Settings.SALE_ORDER_ALL);
+        int customerId = WebUtils.getIntParamValue(request, "customerId", Settings.SALE_ORDER_ALL);
+        Company company = (Company) request.getSession().getAttribute("company");
+
+        List<StatisticsOrderResult> results = saleOrderHome.statisticsOrders(company.getId(), customerId, beginDate, endDate);
+        request.setAttribute("statistics", results);
+        request.setAttribute("beginDate", beginDate);
+        request.setAttribute("endDate", endDate);
+        try {
+            request.getRequestDispatcher("order_statistics_info.jsp").forward(request, response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(JSON.toJSONString(results));
+        //JSON.writeJSONStringTo(results, response.getWriter());
+    }
+
+
 
     public void getSaleOrders(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("execute getSaleOrders");
@@ -321,7 +356,7 @@ public class SaleServiceServlet extends HttpServlet {
         condition.setBeginDate(beginDate);
         condition.setEndDate(endDate);
 
-        if (page==Settings.SALE_ORDER_ALL && rows==Settings.SALE_ORDER_ALL) {    // else exportMode
+        if (page == Settings.SALE_ORDER_ALL && rows == Settings.SALE_ORDER_ALL) {    // else exportMode
             page = 1;
             rows = 100000;   // 默认最多支持导出100000行
             exportMode = true;
@@ -329,16 +364,21 @@ public class SaleServiceServlet extends HttpServlet {
 
         Pagination<SaleOrder> pagination = new Pagination<SaleOrder>(page, rows);
         condition.setPagination(pagination);
-
         Pagination<SaleOrder> pagination1 = saleOrderHome.findAllSaleOrderPagination(condition);
-        List<SaleOrder> data = pagination1.getData();
 
         if (exportMode) {
             // 導出請求
-                // doExport(request,response);
+            // doExport(request,response);
+            response.setContentType("application/msexcel;charset=UTF-8");
+            response.addHeader("Content-Disposition", "attachment;filename=\""
+                    + new String(("出库单列表" + new Date().toString() + ".xlsx").getBytes("UTF-8"),
+                    "ISO8859_1") + "\"");
+            exportSaleOrders(pagination1, response);
+
         } else {
             // 查詢請求
             List<SaleOrderItemBean> orderItemRows = new ArrayList<SaleOrderItemBean>();
+            List<SaleOrder> data = pagination1.getData();
             for (SaleOrder saleOrder : data) {
 
                 SaleOrderItemBean bean = new SaleOrderItemBean();
@@ -347,7 +387,7 @@ public class SaleServiceServlet extends HttpServlet {
                 bean.setCustomer(saleOrder.getCustomer().getName());
                 bean.setCreateUser(saleOrder.getKisUser().getName());
                 bean.setCreateDate(saleOrder.getCreateDatetime());
-                bean.setContentThumbnail(WebUtils.nullToBlank(saleOrder.getContentThumbnail()));
+                bean.setContentThumbnail(formatContentThumbnail(saleOrder.getContentThumbnail(), "<br/>"));
                 bean.setId(saleOrder.getId());
                 bean.setFlag(saleOrder.getFlag());
                 orderItemRows.add(bean);
@@ -362,6 +402,128 @@ public class SaleServiceServlet extends HttpServlet {
     }
 
 
+    private String formatContentThumbnail(String thumbnail, String replaceStr) {
+        if (StringUtils.isBlank(thumbnail))
+            return WebUtils.EMPTY_STR;
+        return thumbnail.replaceAll("\n", replaceStr);
+    }
+
+    private void exportSaleOrders(Pagination<SaleOrder> pagination, HttpServletResponse response) throws IOException {
+        SXSSFWorkbook wb = new SXSSFWorkbook(1000); // keep 100 rows in memory, exceeding rows will be flushed to disk
+        Sheet sh = wb.createSheet("出库单列表");
+
+        sh.setColumnWidth(0, 120 * 20);
+        sh.setColumnWidth(1, 150 * 20);
+        sh.setColumnWidth(2, 500 * 20);
+        sh.setColumnWidth(3, 800 * 20);
+        sh.setColumnWidth(4, 120 * 20);
+        sh.setColumnWidth(5, 250 * 20);
+        sh.setColumnWidth(6, 120 * 20);
+
+     /*   sh.autoSizeColumn(0); //adjust width of the first column
+        sh.autoSizeColumn(1);
+        sh.autoSizeColumn(2);
+        sh.autoSizeColumn(4);
+        sh.autoSizeColumn(5);
+        sh.autoSizeColumn(6);
+*/
+
+
+        CellStyle headerStyle = wb.createCellStyle();
+        headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
+        headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        Font font = wb.createFont();
+        font.setColor(HSSFColor.BLACK.index);
+        //font.setBold(true);
+        font.setFontHeightInPoints((short) 12);
+        font.setFontName("宋体");
+        headerStyle.setFont(font);
+
+
+        Row row = sh.createRow(0);
+        Cell cell;
+
+
+        POIUtils.createCell(row, 0,"单号", headerStyle);
+        POIUtils.createCell(row, 1,"送货日期", headerStyle);
+        POIUtils.createCell(row, 2,"客户", headerStyle);
+        POIUtils.createCell(row, 3, "内容", headerStyle);
+        POIUtils.createCell(row, 4, "制单人", headerStyle);
+        POIUtils.createCell(row, 5, "录入时间", headerStyle);
+        POIUtils.createCell(row, 6, "作废标记", headerStyle);
+
+
+        short dateFormat = wb.getCreationHelper().createDataFormat().getFormat("m/d/yy h:mm");
+
+        CellStyle redStyle = wb.createCellStyle();
+        Font fontRed = wb.createFont();
+        fontRed.setColor(HSSFColor.RED.index);
+        fontRed.setFontHeightInPoints((short) 11);
+        fontRed.setFontName("宋体");
+        redStyle.setFont(fontRed);
+        redStyle.setWrapText(true);
+
+        CellStyle blackStyle = wb.createCellStyle();
+        Font fontBlack = wb.createFont();
+        fontBlack.setColor(HSSFColor.BLACK.index);
+        fontBlack.setFontHeightInPoints((short) 11);
+        fontBlack.setFontName("宋体");
+        blackStyle.setFont(fontBlack);
+        blackStyle.setWrapText(true);
+
+
+        CellStyle invalidDateStyle = wb.createCellStyle();
+        invalidDateStyle.setFont(fontRed);
+        invalidDateStyle.setDataFormat(dateFormat);
+        invalidDateStyle.setWrapText(true);
+
+        CellStyle validDateStyle = wb.createCellStyle();
+        validDateStyle.setDataFormat(dateFormat);
+        validDateStyle.setFont(fontBlack);
+        validDateStyle.setWrapText(true);
+
+        /*CellStyle thumbnailStyle = wb.createCellStyle();
+        thumbnailStyle.setFont(fontBlack);
+        thumbnailStyle.setWrapText(true);*/
+
+        List<SaleOrder> dataList = pagination.getData();
+        for (int rowNum = 0; rowNum < dataList.size(); rowNum++) {
+            row = sh.createRow(rowNum + 1);
+            SaleOrder saleOrder = dataList.get(rowNum);
+
+            int flag = saleOrder.getFlag();
+            boolean invalid = (flag == 1);
+
+            POIUtils.createCell(row, 0, saleOrder.getOrderNumber(), invalid?redStyle:blackStyle);
+            POIUtils.createCell(row, 1, saleOrder.getDateText(), invalid?redStyle:blackStyle);
+            POIUtils.createCell(row, 2, saleOrder.getCustomer().getName(), invalid?redStyle:blackStyle);
+            POIUtils.createCell(row, 3, WebUtils.nullToBlank(saleOrder.getContentThumbnail()), invalid?redStyle:blackStyle);
+            POIUtils.createCell(row, 4, saleOrder.getKisUser().getName(), invalid?redStyle:blackStyle);
+            POIUtils.createCell(row, 5, saleOrder.getCreateDatetime(), invalid?invalidDateStyle:validDateStyle);
+            POIUtils.createCell(row, 6, invalid?"作废":"正常", invalid?redStyle:blackStyle);
+
+        }
+
+
+
+        dataList = null;
+        OutputStream out = null;
+        try {
+            out = response.getOutputStream();
+            wb.write(out);
+            out.close();
+            out = null;
+        } finally {
+            wb.dispose();
+            if (out != null) {
+                out.close();
+            }
+        }
+        // dispose of temporary files backing this workbook on disk
+
+    }
+
+
     public void invalidSaleOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("execute invalidSaleOrder");
         int id = WebUtils.getIntParamValue(request, "saleOrderId");
@@ -369,7 +531,7 @@ public class SaleServiceServlet extends HttpServlet {
         try {
             saleOrderHome.invalid(id);
             result.setSuccess(true);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result.setErrorMsg(e.getMessage());
         }
@@ -400,7 +562,7 @@ public class SaleServiceServlet extends HttpServlet {
             bean.setCategoryName(modal.getProductCategory().getName());
             bean.setUnitsName(modal.getProductUnits().getCnName());
             BigDecimal price = modal.getSuggestUnitPrice();
-            bean.setUnitPrice(price==null?null:price.toString());
+            bean.setUnitPrice(price == null ? null : price.toString());
             beans.add(bean);
 
 

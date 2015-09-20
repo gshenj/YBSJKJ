@@ -4,6 +4,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <head>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon"/>
+
     <title>填写送货单</title>
 
     <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
@@ -120,7 +122,8 @@
         var myModal;
 
         $(document).ready(function () {
-            DO_PRINT_BUTTONS = $('#print_btn').remove();
+            DO_PRINT_BUTTONS = $('#print_btn').html();
+            $('#print_btn').detach();
             myModal = new jBox('Modal')
             myModal.setWidth('600pt');
         });
@@ -431,16 +434,16 @@
 
 </div>
 
-<div id="print_btn">
+<div id="print_btn" style="display: none;">
     <div style="text-align: right; margin-right:6pt;"><a class="easyui-linkbutton" data-options="iconCls:'icon-print'" href="javascript:void(0)" onclick="do_print()" >保存&打印</a> </div>
 </div>
 
 <script type="text/javascript" >
 
-    var LODOP; //声明为全局变量
+    var LODOP  = getLodop(); //声明为全局变量
 
     function previewOrPrint(html_text) {
-        LODOP = getLodop();
+        //LODOP = getLodop();
         //LODOP.PRINT_INITA(0, 0, 522, 333, "打印控件功能演示_Lodop功能_自定义纸张2");
         //LODOP.PRINT_INIT("打印任务1");
        // LODOP.SET_PRINTER_INDEX(-1);   //默认打印机
@@ -451,7 +454,7 @@
         LODOP.SET_SHOW_MODE ('HIDE_SBUTTIN_PREVIEW',true)
         LODOP.SET_SHOW_MODE ('HIDE_QBUTTIN_PREVIEW',true)
         LODOP.SET_SHOW_MODE ('HIDE_PAGE_PERCENT',true)
-        LODOP.SET_PREVIEW_WINDOW(0,0,0,0,0,"打印预览.开始打印");
+        LODOP.SET_PREVIEW_WINDOW(1,0,0,0,0,"打印预览.开始打印");
         LODOP.ADD_PRINT_HTM('5%', '6%', '93%', '93%', html_text)
         LODOP.PREVIEW();
         //LODOP.PRINT();

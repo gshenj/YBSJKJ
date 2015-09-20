@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <head>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon"/>
+
     <title>订单列表</title>
 
     <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
@@ -66,11 +68,11 @@
         }
 
         .panel-title {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             color: #0E2D5F;
-            height: 18px;
-            line-height: 18px;
+            height: 18pt;
+            line-height: 18pt;
         }
 
     </style>
@@ -107,7 +109,8 @@
 
         $(document).ready(function () {
 
-            DO_PRINT_BUTTONS = $('#print_btn').remove();
+            DO_PRINT_BUTTONS = $('#print_btn').html();
+            $('#print_tbn').detach();
             myModal = new jBox('Modal')
             myModal.setWidth('600pt');
         });
@@ -127,12 +130,8 @@
                     saleOrderId: CURRENT_SALE_ORDER_ID
                 })
             }, function (s) {
-                myModal.setTitle(DO_PRINT_BUTTONS)
-                if (row.flag==1)
-                     $('#btn_invalid').hide();
-                else {
-                    $('#btn_invalid').show();
-                }
+                if (row.flag!=1)
+                    myModal.setTitle(DO_PRINT_BUTTONS)
                 myModal.setContent(s)
             })
         }
@@ -169,6 +168,16 @@
 
             $('#dg').datagrid('load', {customerId: customer, flag:flag, beginDate: beginDate, endDate: endDate});
         }
+
+
+        function export_sale_orders() {
+            var customer = $('#customer').combobox('getValue');
+            var flag = $('#flag').combo('getValue');
+            var beginDate = $('#sale_date_begin').datebox('getValue');
+            var endDate = $('#sale_date_end').datebox('getValue');
+
+            window.open("order_service?method=getSaleOrders&customerId="+customer+"&flag="+flag+"&beginDate="+beginDate+"&endDate="+endDate,"下载","");
+        }
     </script>
 
 </head>
@@ -189,11 +198,11 @@
                                    style="float:left; height:30pt; line-height:30pt;padding:0; width:300pt;"/>
                          </span>
                          <span style="float:left; margin-left:40pt; ">
-                            <label style="float:left; height:30pt; line-height: 30pt; margin:0pt 10pt; ">作废标志：</label>
+                            <label style="float:left; height:30pt; line-height: 30pt; margin:0pt 0 0 10pt; ">作废标志：</label>
                             <select id="flag" name="flag" class="easyui-combobox" data-options=""
                                 style="float:left; height:30pt; line-height:30pt;width:120pt;">
                                 <option value="-1" selected>全部</option>
-                                <option value="0">未作废</option>
+                                <option value="0">正常</option>
                                 <option value="1">作废</option>
                                 </select>
                         </span>
@@ -216,7 +225,7 @@
 
                 </div>
                 <a href="#" class="easyui-linkbutton" onclick="list_sale_orders()"
-                   style="float:left; margin:0pt 0pt 0pt 200pt;"><span>查询</span></a>
+                   style="float:left; margin:0pt 0pt 0pt 70pt;"><span>查询</span></a>
                 <a href="#" class="easyui-linkbutton" onclick="export_sale_orders()"
                    style="float:left; margin:0pt 0pt 0pt 30pt;"><span>导出</span></a>
             </div>
@@ -256,23 +265,27 @@
 
 </div>
 
-<div id="print_btn">
+<div id="print_btn" style="display:none;">
     <div style="text-align: right; margin-right:6pt;">
         <a class="easyui-linkbutton" id="btn_invalid" data-options="iconCls:'icon-cancel'"
            style="color:red; margin-right:30pt;"
            href="javascript:void(0)" onclick="do_invalid()">作废</a>
-        <a class="easyui-linkbutton" data-options="iconCls:'icon-print'" id="btn_print" href="javascript:void(0)"  onclick="do_print()">打印</a></div>
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-print'" id="btn_print" href="javascript:void(0)"  onclick="do_print()">打印</a>
+    </div>
 </div>
 
 <script type="text/javascript">
 
-    var LODOP; //声明为全局变量
+    var LODOP = getLodop();; //声明为全局变量
     function previewOrPrint(html_text) {
-        LODOP = getLodop();
-        LODOP.PRINT_INITA(0, 0, 522, 333, "打印控件功能演示_Lodop功能_自定义纸张2");
-        LODOP.SET_PRINTER_INDEX(-1);
-        LODOP.SET_PRINT_PAGESIZE(1, 2410, 1397, "");
-        LODOP.ADD_PRINT_HTM('5mm', '10mm', '550pt', '420pt', html_text)
+        //LODOP = getLodop();
+        LODOP.SET_PRINT_PAGESIZE(0, '210mm', '140mm', '');
+        LODOP.SET_SHOW_MODE ('HIDE_SBUTTIN_PREVIEW',true)
+        LODOP.SET_SHOW_MODE ('HIDE_QBUTTIN_PREVIEW',true)
+        LODOP.SET_SHOW_MODE ('HIDE_PAGE_PERCENT',true)
+        LODOP.SET_SHOW_MODE('NP_NO_RESULT', true)
+        LODOP.SET_PREVIEW_WINDOW(1,0,0,0,0,"打印预览.开始打印");
+        LODOP.ADD_PRINT_HTM('5%', '6%', '93%', '93%', html_text)
         LODOP.PREVIEW();
     }
 

@@ -15,15 +15,27 @@
         <meta charset="UTF-8" />
         <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
         <title>系统登录</title>
-        <link rel="shortcut icon" href="../favicon.ico">
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
 
         <link rel="stylesheet" type="text/css" href="css/demo.css" />
         <link rel="stylesheet" type="text/css" href="css/style.css" />
 		<link rel="stylesheet" type="text/css" href="css/animate-custom.css" />
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="js/LodopFuncs.js"></script>
 
         <script type="text/javascript">
+
+            var LODOP;
+            function checkLodop() {
+                LODOP = getLodop();
+                //LODOP.PRINT_INITA(0, 0, 522, 333, "打印控件功能演示_Lodop功能_自定义纸张2");
+                //LODOP.PRINT_INIT("打印任务1");
+                // LODOP.SET_PRINTER_INDEX(-1);   //默认打印机
+                LODOP.SET_PRINT_PAGESIZE(0, '210mm', '140mm', '');
+            }
+
+
             $(document).ready(function(){
                 //获取cookie的值
                 var username = $.cookie('username');
@@ -34,6 +46,8 @@
                 if(username != null && username != '' && password != null && password != ''){//选中保存秘密的复选框
                     $("#loginkeeping").attr('checked',true);
                 }
+
+                checkLodop();
             });
 
             function login() {

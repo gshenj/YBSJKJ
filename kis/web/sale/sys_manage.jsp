@@ -4,6 +4,8 @@
     Company company = (Company)session.getAttribute("company");
 %>
 <!DOCTYPE html>
+<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon"/>
+
     <title>订单列表</title>
 
     <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
@@ -94,13 +96,13 @@
                     <thead>
                     <tr>
                         <th field="cityId" hidden="true"></th>
-                        <th field="name" width="18%">名称</th>
+                        <th field="name" width="22%">名称</th>
                         <th field="cityName" width="6%">城市</th>
                         <th field="principal" width="6%">联系人</th>
                         <th field="telNumber" width="9%">电话</th>
                         <th field="mobileNumber" width="9%">手机</th>
-                        <th field="address" width="28%">地址</th>
-                        <th field="saleBillInfo" width="22%">开票资料</th>
+                        <th field="address" width="26%">地址</th>
+                        <th field="saleBillInfo" width="20%">开票资料</th>
                     </tr>
                     </thead>
                 </table>
@@ -291,7 +293,7 @@
 
 
     function saveCustomer() {
-        alert(url_customer)
+        // alert(url_customer)
         $('#fm_customer').form('submit', {
             url: url_customer,
             onSubmit: function () {

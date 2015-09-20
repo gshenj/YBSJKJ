@@ -76,6 +76,24 @@
         </property>
 
 
+        <property name="companyName" type="string">
+            <column name="company_name" />
+        </property>
+
+        <property name="companyAddress" type="string">
+            <column name="company_address" />
+        </property>
+
+        <property name="companyFax" type="string">
+            <column name="company_fax" />
+        </property>
+
+        <property name="companyContactNumber" type="string">
+            <column name="company_contact_number" />
+        </property>
+
+
+
         <set name="saleOrderItems" table="sale_order_item" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="sale_order">

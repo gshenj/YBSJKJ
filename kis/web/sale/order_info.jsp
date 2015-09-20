@@ -35,6 +35,11 @@
         saleOrderBean.setCompany(company);
 
         SaleOrder saleOrder = new SaleOrder();
+        saleOrder.setCompanyName(company.getName());
+        saleOrder.setCompanyAddress(company.getAddress());
+        saleOrder.setCompanyContactNumber(company.getTelNumber());
+        saleOrder.setCompanyFax(company.getFax());
+
 
         Customer customer = new CustomerHome().findById(saleOrderBean.getCustomer().getId());
         saleOrder.setCustomer(customer);
@@ -91,9 +96,9 @@
             //totalSum += item.getSum();
             // add totalsum
             if (i>2)
-                contentThumbnailBuilder.append("<br />");
+                contentThumbnailBuilder.append("\n");
 
-            contentThumbnailBuilder.append("[").append(productModal.getName())
+            contentThumbnailBuilder.append("【").append(productModal.getName())
                     .append(",").append(productModal.getProductCategory().getName())
                     .append(",").append(item.getQuantity().toString())
                     .append(productModal.getProductUnits().getCnName());
@@ -102,7 +107,7 @@
                         .append(productModal.getProductUnits().getCnName())
                         .append("=").append(item.getSum().toString()).append("元");
             }
-            contentThumbnailBuilder.append("]");
+            contentThumbnailBuilder.append("】");
 
         }
         saleOrder.setSaleOrderItems(new HashSet(items));
@@ -144,7 +149,12 @@
         cCustomer.setTelNumber(saleOrder.getCustomerContactNumber());
         saleOrderBean.setCustomer(cCustomer);
 
-        saleOrderBean.setCompany(saleOrder.getCustomer().getCompany());
+        Company company = new Company();
+        company.setAddress(saleOrder.getCompanyAddress());
+        company.setFax(saleOrder.getCompanyFax());
+        company.setTelNumber(saleOrder.getCompanyContactNumber());
+        company.setName(saleOrder.getCompanyName());
+        saleOrderBean.setCompany(company);  //saleOrder.getCustomer().getCompany()
 
 
         List<ModalBean> modals = new ArrayList<ModalBean>();

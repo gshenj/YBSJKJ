@@ -31,6 +31,43 @@ public class SaleOrder implements java.io.Serializable {
 	private String customerContactNumber;
 	private String createUserName;
 
+	private String companyName;
+	private String companyAddress;
+	private String companyFax;
+	private String companyContactNumber;
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getCompanyAddress() {
+		return companyAddress;
+	}
+
+	public void setCompanyAddress(String companyAddress) {
+		this.companyAddress = companyAddress;
+	}
+
+	public String getCompanyFax() {
+		return companyFax;
+	}
+
+	public void setCompanyFax(String companyFax) {
+		this.companyFax = companyFax;
+	}
+
+	public String getCompanyContactNumber() {
+		return companyContactNumber;
+	}
+
+	public void setCompanyContactNumber(String companyContactNumber) {
+		this.companyContactNumber = companyContactNumber;
+	}
+
 	private Set<SaleOrderItem> saleOrderItems = new HashSet<SaleOrderItem>(0);
 
 	public SaleOrder() {
